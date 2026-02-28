@@ -1,65 +1,121 @@
-import Image from "next/image";
+'use client';
+
+import { useState, useMemo } from 'react';
+import { products as initialProducts, getCategories } from '@/lib/data';
+import { ProductGrid } from '@/components/ProductGrid';
+import { Button } from '@/components/ui/Button';
+
+type SortOption = 'default' | 'price-asc' | 'price-desc' | 'rating-desc';
 
 export default function Home() {
+  const [activeCategory, setActiveCategory] = useState<string>('All');
+  const [sortBy, setSortBy] = useState<SortOption>('default');
+  const categories = getCategories();
+
+  // Filter & Sort Logic
+  const filteredAndSortedProducts = useMemo(() => {
+    // 1. Filter
+    let result = activeCategory === 'All' 
+      ? initialProducts 
+      : initialProducts.filter(p => p.category === activeCategory);
+
+    // 2. Sort
+    switch (sortBy) {
+      case 'price-asc':
+        result.sort((a, b) => a.price - b.price);
+        break;
+      case 'price-desc':
+        result.sort((a, b) => b.price - a.price);
+        break;
+      case 'rating-desc':
+        result.sort((a, b) => b.rating - a.rating);
+        break;
+      default:
+        break;
+    }
+    return result;
+  }, [activeCategory, sortBy]);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="flex flex-col min-h-screen">
+      {/* Hero Section */}
+      <section className="bg-muted py-20 px-4">
+        <div className="container mx-auto text-center max-w-2xl">
+          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
+            Elevate Your Everyday
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="text-lg md:text-xl text-muted-foreground mb-8">
+            Discover our curated collection of premium products designed to enhance your lifestyle.
           </p>
+          <Button size="lg" className="rounded-full px-8">
+            Shop the Collection
+          </Button>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      {/* Main Content */}
+      <section className="container mx-auto px-4 py-12 flex flex-col md:flex-row gap-8">
+        
+        {/* Sidebar (Filters) */}
+        <aside className="w-full md:w-64 flex-shrink-0">
+          <div className="sticky top-24">
+            <h2 className="text-lg font-semibold mb-4">Categories</h2>
+            <div className="flex md:flex-col gap-2 overflow-x-auto pb-4 md:pb-0">
+              {categories.map(category => (
+                <button
+                  key={category}
+                  onClick={() => setActiveCategory(category)}
+                  className={`px-4 py-2 text-sm font-medium rounded-lg text-left whitespace-nowrap transition-colors ${
+                    activeCategory === category
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-muted/50 hover:bg-muted text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+          </div>
+        </aside>
+
+        {/* Product Grid Area */}
+        <div className="flex-1">
+          {/* Toolbar */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+            <h2 className="text-2xl font-bold">
+              {activeCategory === 'All' ? 'All Products' : activeCategory}
+              <span className="text-sm font-normal text-muted-foreground ml-3">
+                {filteredAndSortedProducts.length} results
+              </span>
+            </h2>
+
+            <div className="flex items-center gap-3">
+              <label htmlFor="sort" className="text-sm font-medium text-muted-foreground">
+                Sort by:
+              </label>
+              <select
+                id="sort"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as SortOption)}
+                className="text-sm border-border bg-background rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-primary/50 transition-shadow appearance-none pr-8 cursor-pointer shadow-sm relative"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
+                  backgroundPosition: `right 0.5rem center`,
+                  backgroundRepeat: `no-repeat`,
+                  backgroundSize: `1.2em 1.2em`,
+                }}
+              >
+                <option value="default">Featured</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="rating-desc">Highest Rated</option>
+              </select>
+            </div>
+          </div>
+
+          <ProductGrid products={filteredAndSortedProducts} />
         </div>
-      </main>
+      </section>
     </div>
   );
 }
