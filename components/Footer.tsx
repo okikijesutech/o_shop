@@ -7,7 +7,7 @@ import Link from 'next/link';
 export function Footer() {
   const { addToast } = useToastStore();
 
-  const handleDummyLink = (e: React.MouseEvent) => {
+  const handleDummyLink = (e: React.MouseEvent | React.FormEvent) => {
     e.preventDefault();
     addToast('This page is not implemented in the portfolio demo.', 'info');
   };
