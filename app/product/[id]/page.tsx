@@ -43,7 +43,8 @@ export default function ProductDetailPage() {
             <img 
               src={product.image} 
               alt={product.name} 
-              className="object-cover w-full h-full"
+              loading="eager"
+              className="object-cover w-full h-full relative z-10"
             />
           </div>
         </div>
@@ -59,7 +60,7 @@ export default function ProductDetailPage() {
           
           <div className="flex items-center gap-4 mb-6">
             <div className="flex items-center gap-1">
-              <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+              <Star className="w-5 h-5 fill-secondary text-secondary" />
               <span className="font-medium">{product.rating}</span>
             </div>
             <span className="text-muted-foreground text-sm flex items-center gap-1">
@@ -100,7 +101,7 @@ export default function ProductDetailPage() {
           </div>
 
           {/* Features */}
-          <div className="flex flex-col gap-3 text-sm text-muted-foreground bg-muted/30 p-4 rounded-xl">
+          <div className="flex flex-col gap-3 text-sm text-muted-foreground bg-primary/5 p-4 rounded-xl border border-primary/10">
             <div className="flex items-center gap-3">
               <Truck className="w-5 h-5 text-primary" />
               <span>Free shipping on orders over $50</span>

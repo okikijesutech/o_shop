@@ -1,35 +1,72 @@
 @import "tailwindcss";
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.141 0.005 285.823);
-  --primary: oklch(0.21 0.006 285.885);
-  --primary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.967 0.001 286.375);
-  --muted-foreground: oklch(0.553 0.013 285.938);
-  --border: oklch(0.92 0.004 286.32);
+  /* Soft pearl off-white background */
+  --background: oklch(0.985 0.005 90.000); 
+  /* Deep slate text for readability */
+  --foreground: oklch(0.200 0.020 250.000); 
+
+  /* Premium Emerald Green for primary actions (Add to Cart, Checkout) */
+  --primary: oklch(0.480 0.120 150.000); 
+  --primary-foreground: oklch(0.990 0 0); 
+  
+  /* Deep Gold/Amber for secondary actions and highlights (Sale tags, Stars) */
+  --secondary: oklch(0.700 0.180 65.000); 
+  --secondary-foreground: oklch(0.150 0.050 60.000);
+
+  /* Light gray for muted elements (Cards, Skeletons) */
+  --muted: oklch(0.950 0.010 250.000); 
+  --muted-foreground: oklch(0.550 0.020 250.000); 
+  
+  /* Soft borders */
+  --border: oklch(0.900 0.020 250.000); 
+  
+  /* Error / Destructive colors (Remove from cart) */
+  --destructive: oklch(0.550 0.200 25.000);
+  --destructive-foreground: oklch(0.990 0 0);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: oklch(0.141 0.005 285.823);
-    --foreground: oklch(0.985 0 0);
-    --primary: oklch(0.985 0 0);
-    --primary-foreground: oklch(0.21 0.006 285.885);
-    --muted: oklch(0.274 0.006 286.033);
-    --muted-foreground: oklch(0.705 0.015 286.067);
-    --border: oklch(0.274 0.006 286.033);
+.dark {
+    /* Rich, dark charcoal background */
+    --background: oklch(0.150 0.010 250.000); 
+    /* Soft white text */
+    --foreground: oklch(0.960 0.010 250.000); 
+    
+    /* Slightly lighter, vibrant emerald for dark mode contrast */
+    --primary: oklch(0.550 0.130 150.000); 
+    --primary-foreground: oklch(0.100 0.020 250.000); 
+    
+    /* Brighter gold for dark mode */
+    --secondary: oklch(0.800 0.160 70.000); 
+    --secondary-foreground: oklch(0.150 0.050 60.000);
+
+    /* Deep muted gray for cards */
+    --muted: oklch(0.220 0.015 250.000); 
+    --muted-foreground: oklch(0.700 0.020 250.000); 
+    
+    /* Dark borders */
+    --border: oklch(0.250 0.020 250.000); 
+    
+    --destructive: oklch(0.550 0.200 25.000);
+    --destructive-foreground: oklch(0.990 0 0);
   }
-}
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
+  
   --color-border: var(--border);
+  
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);

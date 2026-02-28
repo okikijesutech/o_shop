@@ -1,25 +1,48 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { products as initialProducts, getCategories } from '@/lib/data';
 import { ProductGrid } from '@/components/ProductGrid';
 import { Button } from '@/components/ui/Button';
+import { Pagination } from '@/components/ui/Pagination';
+import { HeroCarousel } from '@/components/HeroCarousel';
+import { useSearchStore } from '@/store/useSearchStore';
 
 type SortOption = 'default' | 'price-asc' | 'price-desc' | 'rating-desc';
+
+const ITEMS_PER_PAGE = 8;
 
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [sortBy, setSortBy] = useState<SortOption>('default');
+  const [currentPage, setCurrentPage] = useState(1);
+  const { searchQuery } = useSearchStore();
   const categories = getCategories();
+
+  // Reset page when category, sort, or search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeCategory, sortBy, searchQuery]);
 
   // Filter & Sort Logic
   const filteredAndSortedProducts = useMemo(() => {
-    // 1. Filter
-    let result = activeCategory === 'All' 
-      ? initialProducts 
-      : initialProducts.filter(p => p.category === activeCategory);
+    let result = initialProducts;
 
-    // 2. Sort
+    // 1. Search Query Filter (Fuzzy match name or description)
+    if (searchQuery.trim() !== '') {
+      const lowerQuery = searchQuery.toLowerCase();
+      result = result.filter(p => 
+        p.name.toLowerCase().includes(lowerQuery) || 
+        p.description.toLowerCase().includes(lowerQuery)
+      );
+    }
+
+    // 2. Category Filter
+    if (activeCategory !== 'All') {
+      result = result.filter(p => p.category === activeCategory);
+    }
+
+    // 3. Sort
     switch (sortBy) {
       case 'price-asc':
         result.sort((a, b) => a.price - b.price);
@@ -34,24 +57,18 @@ export default function Home() {
         break;
     }
     return result;
-  }, [activeCategory, sortBy]);
+  }, [activeCategory, sortBy, searchQuery]);
+
+  // Pagination Logic
+  const totalPages = Math.ceil(filteredAndSortedProducts.length / ITEMS_PER_PAGE);
+  const paginatedProducts = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredAndSortedProducts.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [filteredAndSortedProducts, currentPage]);
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Hero Section */}
-      <section className="bg-muted py-20 px-4">
-        <div className="container mx-auto text-center max-w-2xl">
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
-            Elevate Your Everyday
-          </h1>
-          <p className="text-lg md:text-xl text-muted-foreground mb-8">
-            Discover our curated collection of premium products designed to enhance your lifestyle.
-          </p>
-          <Button size="lg" className="rounded-full px-8">
-            Shop the Collection
-          </Button>
-        </div>
-      </section>
+      <HeroCarousel />
 
       {/* Main Content */}
       <section className="container mx-auto px-4 py-12 flex flex-col md:flex-row gap-8">
@@ -83,7 +100,7 @@ export default function Home() {
           {/* Toolbar */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
             <h2 className="text-2xl font-bold">
-              {activeCategory === 'All' ? 'All Products' : activeCategory}
+              {searchQuery ? `Search results for "${searchQuery}"` : (activeCategory === 'All' ? 'All Products' : activeCategory)}
               <span className="text-sm font-normal text-muted-foreground ml-3">
                 {filteredAndSortedProducts.length} results
               </span>
@@ -113,7 +130,16 @@ export default function Home() {
             </div>
           </div>
 
-          <ProductGrid products={filteredAndSortedProducts} />
+          <ProductGrid products={paginatedProducts} />
+          
+          <Pagination 
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={(page) => {
+              setCurrentPage(page);
+              window.scrollTo({ top: 300, behavior: 'smooth' });
+            }}
+          />
         </div>
       </section>
     </div>

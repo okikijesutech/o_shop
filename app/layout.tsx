@@ -16,6 +16,8 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+import { ThemeProvider } from "@/components/ThemeProvider";
+
 export const metadata: Metadata = {
   title: "O-Shop | Premium E-Commerce",
   description: "A premium portfolio e-commerce experience showcasing frontend engineering.",
@@ -27,15 +29,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}>
-        <Navbar />
-        <main className="flex-1">
-          {children}
-        </main>
-        <CartSidebar />
-        <ToastProvider />
-        <Footer />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Navbar />
+          <main className="flex-1">
+            {children}
+          </main>
+          <CartSidebar />
+          <ToastProvider />
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );
