@@ -19,8 +19,8 @@ export function Navbar() {
   const { searchQuery, setSearchQuery } = useSearchStore();
   const { theme, setTheme } = useTheme();
   
-  const itemCount = getItemCount();
-  const wishlistCount = getWishlistCount();
+  const itemCount = mounted ? getItemCount() : 0;
+  const wishlistCount = mounted ? getWishlistCount() : 0;
 
   // Prevent hydration mismatch
   useEffect(() => {

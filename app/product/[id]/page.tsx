@@ -8,15 +8,28 @@ import { useCartStore } from '@/store/useCartStore';
 import { useToastStore } from '@/store/useToastStore';
 import { useState } from 'react';
 import Link from 'next/link';
+import { ProductReviews } from '@/components/ProductReviews';
+import { RelatedProducts } from '@/components/RelatedProducts';
+import { useHistoryStore } from '@/store/useHistoryStore';
+import { useEffect } from 'react';
 
-export default function ProductDetailPage() {
-  const pathname = usePathname();
-  const id = pathname.split('/').pop();
+import { use } from 'react';
+
+export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = use(params);
+  const id = resolvedParams.id;
   
   const product = products.find((p) => p.id === id);
   const { addItem, setCartOpen } = useCartStore();
   const { addToast } = useToastStore();
+  const { addHistoryItem } = useHistoryStore();
   const [quantity, setQuantity] = useState(1);
+
+  useEffect(() => {
+    if (product) {
+      addHistoryItem(product);
+    }
+  }, [product, addHistoryItem]);
 
   if (!product) {
     return notFound();
@@ -113,6 +126,9 @@ export default function ProductDetailPage() {
           </div>
         </div>
       </div>
+
+      <ProductReviews productId={product.id} />
+      <RelatedProducts currentProductId={product.id} category={product.category} />
     </div>
   );
 }

@@ -9,7 +9,7 @@ import Link from 'next/link';
 
 export function CartSidebar() {
   const [mounted, setMounted] = useState(false);
-  const { items, removeItem, updateQuantity, getCartTotal, clearCart, isCartOpen, setCartOpen } = useCartStore();
+  const { items, removeItem, updateQuantity, getCartTotal, getSubtotal, clearCart, isCartOpen, setCartOpen } = useCartStore();
 
   useEffect(() => {
     setMounted(true);
@@ -112,7 +112,7 @@ export function CartSidebar() {
               <div className="p-6 border-t border-border bg-background">
                 <div className="flex justify-between items-center mb-4 text-lg font-semibold">
                   <span>Subtotal</span>
-                  <span>${getCartTotal().toFixed(2)}</span>
+                  <span>${getSubtotal().toFixed(2)}</span>
                 </div>
                 <p className="text-xs text-muted-foreground mb-4 text-center">
                   Shipping and taxes calculated at checkout.

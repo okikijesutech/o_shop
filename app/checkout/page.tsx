@@ -8,7 +8,7 @@ import { CheckCircle2, CreditCard, ShoppingBag, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
 export default function CheckoutPage() {
-  const { items, getCartTotal, clearCart } = useCartStore();
+  const { items, getCartTotal, getSubtotal, clearCart, discountRate, shippingCost, applyPromoCode } = useCartStore();
   const { addToast } = useToastStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -184,14 +184,50 @@ export default function CheckoutPage() {
             
             <hr className="border-border my-6" />
 
+            {/* Promo Code Input */}
+            <form 
+              onSubmit={(e) => {
+                e.preventDefault();
+                const form = e.target as HTMLFormElement;
+                const input = form.elements.namedItem('promo') as HTMLInputElement;
+                const success = applyPromoCode(input.value);
+                if (success) {
+                  addToast('Promo code applied successfully!', 'success');
+                } else {
+                  addToast('Invalid promo code.', 'error');
+                }
+              }}
+              className="flex gap-2 mb-6"
+            >
+              <input 
+                type="text" 
+                name="promo"
+                placeholder="Discount code (try NEXTJS)" 
+                className="flex-1 h-10 px-4 border border-input rounded-lg bg-background focus:ring-2 focus:ring-primary/50 outline-none text-sm uppercase" 
+              />
+              <Button type="submit" variant="secondary" className="h-10 px-4">Apply</Button>
+            </form>
+
             <div className="space-y-3 text-sm">
               <div className="flex justify-between text-muted-foreground">
                 <span>Subtotal</span>
-                <span className="text-foreground font-medium">${getCartTotal().toFixed(2)}</span>
+                <span className="text-foreground font-medium">${getSubtotal().toFixed(2)}</span>
               </div>
+              
+              {discountRate > 0 && (
+                <div className="flex justify-between text-secondary font-medium">
+                  <span>Discount ({(discountRate * 100).toFixed(0)}%)</span>
+                  <span>-${(getSubtotal() * discountRate).toFixed(2)}</span>
+                </div>
+              )}
+
               <div className="flex justify-between text-muted-foreground">
                 <span>Shipping</span>
-                <span className="text-green-600 font-medium">Free</span>
+                <span className="text-foreground font-medium">
+                  {getCartTotal() - (getSubtotal() * (1 - discountRate)) === 0 
+                    ? <span className="text-green-600">Free</span> 
+                    : `$${shippingCost.toFixed(2)}`}
+                </span>
               </div>
               <div className="flex justify-between text-muted-foreground">
                 <span>Tax (Estimated)</span>

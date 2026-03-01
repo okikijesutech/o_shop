@@ -4,10 +4,12 @@ import { Navbar } from "@/components/Navbar";
 import { CartSidebar } from "@/components/CartSidebar";
 import { ToastProvider } from "@/components/ToastProvider";
 import { Footer } from "@/components/Footer";
+import { QuickViewModal } from "@/components/QuickViewModal";
+import { RecentlyViewed } from "@/components/RecentlyViewed";
 import "./globals.css";
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
+  variable: "--font-geist-sans",  
   subsets: ["latin"],
 });
 
@@ -41,8 +43,10 @@ export default function RootLayout({
           <main className="flex-1">
             {children}
           </main>
-          <CartSidebar />
-          <ToastProvider />
+          {/* <CartSidebar /> */}
+          {/* <QuickViewModal /> */}
+          {/* <ToastProvider /> */}
+          {/* <RecentlyViewed /> */}
           <Footer />
         </ThemeProvider>
       </body>

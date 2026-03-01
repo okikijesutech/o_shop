@@ -6,8 +6,10 @@ O-Shop is a beautifully designed, highly interactive front-end e-commerce portfo
 
 [Visit O-Shop Live](https://o-shop-one.vercel.app/)
 
-## 🖼️ Screenshot
-*(Replace this placeholder with a screenshot of your live app! `![O-Shop Screenshot](public/screenshot.png)`)*
+## 🖼️ Screenshots
+
+![O-Shop Desktop View](public/screenshot_1.png)
+![O-Shop Category View](public/screenshot_2.png)
 
 ---
 

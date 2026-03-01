@@ -2,7 +2,8 @@ import { Product } from "@/lib/data";
 import { useCartStore } from "@/store/useCartStore";
 import { useToastStore } from "@/store/useToastStore";
 import { useWishlistStore } from "@/store/useWishlistStore";
-import { Star, ShoppingCart, Heart } from "lucide-react";
+import { useModalStore } from "@/store/useModalStore";
+import { Star, ShoppingCart, Heart, Eye } from "lucide-react";
 import { Button } from "./ui/Button";
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -18,8 +19,9 @@ export function ProductCard({ product }: ProductCardProps) {
   const { addItem, setCartOpen } = useCartStore();
   const { addToast } = useToastStore();
   const { toggleItem, isInWishlist } = useWishlistStore();
+  const { openModal } = useModalStore();
 
-  const isFavorited = isInWishlist(product.id);
+  const isFavorited = mounted ? isInWishlist(product.id) : false;
 
   useEffect(() => {
     setMounted(true);
@@ -42,6 +44,11 @@ export function ProductCard({ product }: ProductCardProps) {
     }
   };
 
+  const handleQuickView = (e: React.MouseEvent) => {
+    e.preventDefault();
+    openModal(product);
+  };
+
   return (
     <Link href={`/product/${product.id}`} className="group block h-full">
       <div className="relative flex flex-col overflow-hidden rounded-2xl bg-card border border-border/50 transition-all duration-300 hover:shadow-xl hover:border-primary/20 h-full">
@@ -59,12 +66,20 @@ export function ProductCard({ product }: ProductCardProps) {
           <button
             onClick={handleToggleWishlist}
             className={clsx(
-              "absolute top-3 right-3 z-30 p-2.5 rounded-full bg-background/80 backdrop-blur border border-border/50 shadow-sm transition-all duration-300 hover:scale-110",
-              mounted && isFavorited ? "text-red-500" : "text-muted-foreground hover:text-red-500"
+              "absolute top-4 right-4 z-30 p-2 rounded-full bg-background/80 backdrop-blur border border-border/50 shadow-sm transition-all duration-300 hover:scale-110",
+              mounted && isFavorited ? "text-destructive" : "text-muted-foreground hover:text-foreground"
             )}
-            aria-label="Toggle Wishlist"
           >
-            <Heart className={clsx("w-4 h-4 transition-all duration-300", mounted && isFavorited && "fill-current scale-110")} />
+            <Heart className={clsx("w-5 h-5 transition-colors", mounted && isFavorited && "fill-current")} />
+          </button>
+
+          {/* Quick View Button */}
+          <button
+            onClick={handleQuickView}
+            className="absolute top-16 right-4 z-30 p-2 rounded-full bg-background/80 backdrop-blur border border-border/50 shadow-sm transition-all duration-300 hover:scale-110 text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100"
+            aria-label="Quick View"
+          >
+            <Eye className="w-5 h-5 transition-colors" />
           </button>
 
           {/* Quick Add Button overlay */}
