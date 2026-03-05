@@ -1,4 +1,4 @@
-import { Product } from "@/lib/data";
+import { Product } from "@/types";
 import { useCartStore } from "@/store/useCartStore";
 import { useToastStore } from "@/store/useToastStore";
 import { useWishlistStore } from "@/store/useWishlistStore";
@@ -14,18 +14,18 @@ interface ProductCardProps {
   product: Product;
 }
 
+import { useMounted } from '@/hooks/useMounted';
+
 export function ProductCard({ product }: ProductCardProps) {
-  const [mounted, setMounted] = useState(false);
-  const { addItem, setCartOpen } = useCartStore();
-  const { addToast } = useToastStore();
-  const { toggleItem, isInWishlist } = useWishlistStore();
-  const { openModal } = useModalStore();
+  const mounted = useMounted();
+  const addItem = useCartStore(state => state.addItem);
+  const setCartOpen = useCartStore(state => state.setCartOpen);
+  const addToast = useToastStore(state => state.addToast);
+  const toggleItem = useWishlistStore(state => state.toggleItem);
+  const isInWishlist = useWishlistStore(state => state.isInWishlist);
+  const openModal = useModalStore(state => state.openModal);
 
   const isFavorited = mounted ? isInWishlist(product.id) : false;
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();

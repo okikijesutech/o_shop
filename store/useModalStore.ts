@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Product } from '@/lib/data';
+import { Product } from '@/types';
 
 interface ModalState {
   isOpen: boolean;

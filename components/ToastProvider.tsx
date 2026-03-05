@@ -5,13 +5,12 @@ import { CheckCircle2, AlertCircle, Info, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 
-export function ToastProvider() {
-  const [mounted, setMounted] = useState(false);
-  const { toasts, removeToast } = useToastStore();
+import { useMounted } from '@/hooks/useMounted';
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+export function ToastProvider() {
+  const mounted = useMounted();
+  const toasts = useToastStore(state => state.toasts);
+  const removeToast = useToastStore(state => state.removeToast);
 
   if (!mounted) return null;
 

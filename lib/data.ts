@@ -1,13 +1,4 @@
-export type Product = {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  category: string;
-  image: string;
-  rating: number;
-  reviewCount: number;
-};
+import { Product } from '@/types';
 
 // Expanded to 24 products to accommodate pagination testing (e.g. 12 items per page)
 export const products: Product[] = [

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { products as initialProducts, getCategories } from '@/lib/data';
+import { api } from '@/services/api';
 import { ProductGrid } from '@/components/ProductGrid';
 import { Button } from '@/components/ui/Button';
 import { Pagination } from '@/components/ui/Pagination';
@@ -16,8 +16,8 @@ export default function Home() {
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [sortBy, setSortBy] = useState<SortOption>('default');
   const [currentPage, setCurrentPage] = useState(1);
-  const { searchQuery } = useSearchStore();
-  const categories = getCategories();
+  const searchQuery = useSearchStore(state => state.searchQuery);
+  const categories = api.getCategories();
 
   // Reset page when category, sort, or search changes
   useEffect(() => {
@@ -26,7 +26,7 @@ export default function Home() {
 
   // Filter & Sort Logic
   const filteredAndSortedProducts = useMemo(() => {
-    let result = initialProducts;
+    let result = api.getProducts();
 
     // 1. Search Query Filter (Fuzzy match name or description)
     if (searchQuery.trim() !== '') {

@@ -5,7 +5,7 @@ import { ArrowRight, Facebook, Instagram, Twitter } from 'lucide-react';
 import Link from 'next/link';
 
 export function Footer() {
-  const { addToast } = useToastStore();
+  const addToast = useToastStore(state => state.addToast);
 
   const handleDummyLink = (e: React.MouseEvent | React.FormEvent) => {
     e.preventDefault();

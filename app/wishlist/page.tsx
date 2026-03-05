@@ -7,13 +7,12 @@ import { Heart, ShoppingBag, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
-export default function WishlistPage() {
-  const [mounted, setMounted] = useState(false);
-  const { items, getItemCount } = useWishlistStore();
+import { useMounted } from '@/hooks/useMounted';
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+export default function WishlistPage() {
+  const mounted = useMounted();
+  const items = useWishlistStore(state => state.items);
+  const getItemCount = useWishlistStore(state => state.getItemCount);
 
   if (!mounted) {
     return <div className="min-h-[50vh] flex items-center justify-center">Loading...</div>;

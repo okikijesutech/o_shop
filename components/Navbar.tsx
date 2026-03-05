@@ -9,45 +9,18 @@ import { useSearchStore } from '@/store/useSearchStore';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
 
+import { useMounted } from '@/hooks/useMounted';
+import { NavSearch } from './NavSearch';
+
 export function Navbar() {
-  const [mounted, setMounted] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const searchInputRef = useRef<HTMLInputElement>(null);
-  
-  const { getItemCount, toggleCart } = useCartStore();
-  const { getItemCount: getWishlistCount } = useWishlistStore();
-  const { searchQuery, setSearchQuery } = useSearchStore();
+  const mounted = useMounted();
+  const getItemCount = useCartStore(state => state.getItemCount);
+  const toggleCart = useCartStore(state => state.toggleCart);
+  const getWishlistCount = useWishlistStore(state => state.getItemCount);
   const { theme, setTheme } = useTheme();
-  
+
   const itemCount = mounted ? getItemCount() : 0;
   const wishlistCount = mounted ? getWishlistCount() : 0;
-
-  // Prevent hydration mismatch
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Handle click outside to close search if empty
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (searchInputRef.current && !searchInputRef.current.contains(event.target as Node)) {
-        if (!searchQuery) {
-          setIsSearchOpen(false);
-        }
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [searchQuery]);
-
-  const handleSearchToggle = () => {
-    if (isSearchOpen && !searchQuery) {
-      setIsSearchOpen(false);
-    } else {
-      setIsSearchOpen(true);
-      setTimeout(() => searchInputRef.current?.focus(), 100);
-    }
-  };
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -89,38 +62,7 @@ export function Navbar() {
 
         {/* Right Side Actions */}
         <div className="flex items-center space-x-2 md:space-x-4">
-          
-          {/* Animated Search Area */}
-          <div className="relative flex items-center justify-end h-10" ref={searchInputRef}>
-            <AnimatePresence>
-              {isSearchOpen && (
-                <motion.input
-                  initial={{ width: 0, opacity: 0 }}
-                  animate={{ width: "200px", opacity: 1 }}
-                  exit={{ width: 0, opacity: 0 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  type="text"
-                  placeholder="Search products..."
-                  value={searchQuery}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                    if (window.scrollY < 300) {
-                      window.scrollTo({ top: 500, behavior: 'smooth' });
-                    }
-                  }}
-                  className="absolute right-0 h-full pl-4 pr-10 text-sm bg-muted/50 border border-border rounded-full focus:outline-none focus:ring-2 focus:ring-primary/50 origin-right placeholder:text-muted-foreground"
-                />
-              )}
-            </AnimatePresence>
-            
-            <button 
-              onClick={handleSearchToggle}
-              className={`p-2 rounded-full transition-colors z-10 ${isSearchOpen ? 'text-primary' : 'text-foreground/80 hover:text-foreground'}`}
-              aria-label="Toggle Search"
-            >
-              <Search className="w-5 h-5" />
-            </button>
-          </div>
+          <NavSearch />
 
           {/* Theme Toggle */}
           <button

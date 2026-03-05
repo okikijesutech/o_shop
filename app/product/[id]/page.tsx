@@ -1,7 +1,7 @@
 'use client';
 
 import { notFound, usePathname, useRouter } from 'next/navigation';
-import { products } from '@/lib/data';
+import { api } from '@/services/api';
 import { Button } from '@/components/ui/Button';
 import { ShoppingCart, Star, ShieldCheck, Truck, ArrowLeft } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
@@ -19,10 +19,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   const resolvedParams = use(params);
   const id = resolvedParams.id;
   
-  const product = products.find((p) => p.id === id);
-  const { addItem, setCartOpen } = useCartStore();
-  const { addToast } = useToastStore();
-  const { addHistoryItem } = useHistoryStore();
+  const product = api.getProductById(id);
+  const addItem = useCartStore(state => state.addItem);
+  const setCartOpen = useCartStore(state => state.setCartOpen);
+  const addToast = useToastStore(state => state.addToast);
+  const addHistoryItem = useHistoryStore(state => state.addHistoryItem);
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {

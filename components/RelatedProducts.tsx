@@ -1,7 +1,8 @@
 'use client';
 
 import { useMemo } from 'react';
-import { products, Product } from '@/lib/data';
+import { api } from '@/services/api';
+import { Product } from '@/types';
 import { ProductCard } from './ProductCard';
 
 interface RelatedProductsProps {
@@ -12,7 +13,7 @@ interface RelatedProductsProps {
 export function RelatedProducts({ currentProductId, category }: RelatedProductsProps) {
   // Find up to 4 other products in the same category, excluding the current one
   const relatedProducts = useMemo(() => {
-    return products
+    return api.getProducts()
       .filter((p) => p.category === category && p.id !== currentProductId)
       .slice(0, 4);
   }, [currentProductId, category]);

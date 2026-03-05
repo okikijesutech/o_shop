@@ -4,13 +4,11 @@ import { useHistoryStore } from '@/store/useHistoryStore';
 import { ProductCard } from './ProductCard';
 import { useEffect, useState } from 'react';
 
-export function RecentlyViewed() {
-  const [mounted, setMounted] = useState(false);
-  const { viewedItems } = useHistoryStore();
+import { useMounted } from '@/hooks/useMounted';
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+export function RecentlyViewed() {
+  const mounted = useMounted();
+  const viewedItems = useHistoryStore(state => state.viewedItems);
 
   // Avoid hydration mismatch by waiting for mount
   if (!mounted || viewedItems.length === 0) return null;

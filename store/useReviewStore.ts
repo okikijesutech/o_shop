@@ -1,14 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export interface Review {
-  id: string;
-  productId: string;
-  author: string;
-  rating: number;
-  text: string;
-  date: string;
-}
+import { Review } from '@/types';
 
 interface ReviewState {
   reviews: Review[];

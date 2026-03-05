@@ -7,13 +7,18 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 
-export function CartSidebar() {
-  const [mounted, setMounted] = useState(false);
-  const { items, removeItem, updateQuantity, getCartTotal, getSubtotal, clearCart, isCartOpen, setCartOpen } = useCartStore();
+import { useMounted } from '@/hooks/useMounted';
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+export function CartSidebar() {
+  const mounted = useMounted();
+  const items = useCartStore(state => state.items);
+  const removeItem = useCartStore(state => state.removeItem);
+  const updateQuantity = useCartStore(state => state.updateQuantity);
+  const getCartTotal = useCartStore(state => state.getCartTotal);
+  const getSubtotal = useCartStore(state => state.getSubtotal);
+  const clearCart = useCartStore(state => state.clearCart);
+  const isCartOpen = useCartStore(state => state.isCartOpen);
+  const setCartOpen = useCartStore(state => state.setCartOpen);
 
   if (!mounted) return null;
 

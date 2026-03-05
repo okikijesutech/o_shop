@@ -8,8 +8,14 @@ import { CheckCircle2, CreditCard, ShoppingBag, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
 export default function CheckoutPage() {
-  const { items, getCartTotal, getSubtotal, clearCart, discountRate, shippingCost, applyPromoCode } = useCartStore();
-  const { addToast } = useToastStore();
+  const items = useCartStore(state => state.items);
+  const getCartTotal = useCartStore(state => state.getCartTotal);
+  const getSubtotal = useCartStore(state => state.getSubtotal);
+  const clearCart = useCartStore(state => state.clearCart);
+  const discountRate = useCartStore(state => state.discountRate);
+  const shippingCost = useCartStore(state => state.shippingCost);
+  const applyPromoCode = useCartStore(state => state.applyPromoCode);
+  const addToast = useToastStore(state => state.addToast);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 

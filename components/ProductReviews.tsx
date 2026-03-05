@@ -11,8 +11,10 @@ interface ProductReviewsProps {
 }
 
 export function ProductReviews({ productId }: ProductReviewsProps) {
-  const { addReview, getReviewsByProduct, getAverageRating } = useReviewStore();
-  const { addToast } = useToastStore();
+  const addReview = useReviewStore(state => state.addReview);
+  const getReviewsByProduct = useReviewStore(state => state.getReviewsByProduct);
+  const getAverageRating = useReviewStore(state => state.getAverageRating);
+  const addToast = useToastStore(state => state.addToast);
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [rating, setRating] = useState(5);

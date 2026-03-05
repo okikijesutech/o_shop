@@ -8,15 +8,16 @@ import { useCartStore } from '@/store/useCartStore';
 import { useToastStore } from '@/store/useToastStore';
 import { Button } from './ui/Button';
 
-export function QuickViewModal() {
-  const [mounted, setMounted] = useState(false);
-  const { isOpen, activeProduct, closeModal } = useModalStore();
-  const { addItem, setCartOpen } = useCartStore();
-  const { addToast } = useToastStore();
+import { useMounted } from '@/hooks/useMounted';
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+export function QuickViewModal() {
+  const mounted = useMounted();
+  const isOpen = useModalStore(state => state.isOpen);
+  const activeProduct = useModalStore(state => state.activeProduct);
+  const closeModal = useModalStore(state => state.closeModal);
+  const addItem = useCartStore(state => state.addItem);
+  const setCartOpen = useCartStore(state => state.setCartOpen);
+  const addToast = useToastStore(state => state.addToast);
 
   // Prevent background scrolling when modal is open
   useEffect(() => {
